@@ -17,6 +17,7 @@ class Migration(migrations.Migration):
                 ('autor', models.TextField()),
                 ('data', models.TextField()),
                 ('texto', models.TextField()),
+                ('data_exibicao', models.DateField(null=True, blank=True)),
             ],
             options={
             },
