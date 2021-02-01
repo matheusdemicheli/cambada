@@ -1,11 +1,8 @@
-from django.conf.urls import patterns, include, url
 from django.contrib import admin
+from django.urls import include, path
 
-urlpatterns = patterns('',
-    # Examples:
-    # url(r'^$', 'cambada.views.home', name='home'),
-    # url(r'^blog/', include('blog.urls')),
-
-    url(r'^admin/', include(admin.site.urls)),
-    url(r'^frases_historicas/', include('frases_historicas.urls')),
-)
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('frases_historicas/', include('frases_historicas.urls')),
+    path('webpush/', include('webpush.urls')),
+]

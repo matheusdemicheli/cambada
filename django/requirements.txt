@@ -1,3 +1,4 @@
-Django==1.7
-django-cors-headers==2.1.0
+Django
+django-cors-headers
 ipython==5.5.0
+django-webpush

@@ -1,8 +1,8 @@
-from django.conf.urls import patterns, include, url
+from django.urls import path
+from frases_historicas import views
 
-
-urlpatterns = patterns('frases_historicas.views',
-    url(r'^aleatoria/$', 'get_frase_aleatoria', name='get_frase_aleatoria'),
-    url(r'^dia/$', 'get_frase_do_dia', name='get_frase_do_dia'),
-    url(r'^pesquisa/$', 'pesquisar_frases', name='pesquisar_frases'),
-)
+urlpatterns = [
+    path('dia/', views.get_frase_do_dia, name='get_frase_do_dia'),
+    path('aleatoria/', views.get_frase_aleatoria, name='get_frase_aleatoria'),
+    path('pesquisa/', views.pesquisar_frases, name='pesquisar_frases'),
+]

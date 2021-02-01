@@ -40,7 +40,7 @@ class FraseHistoricaManager(models.Manager):
             if not frases:
                 # Caso todas as frases tenham sido escolhidas ao menos uma vez,
                 # atualiza o campo da data de exibição para None.
-                queryset.all().update(data_exibicao__isnull=True)
+                queryset.all().update(data_exibicao=None)
                 frases = queryset.filter(data_exibicao__isnull=True)
 
             frase = self.get_frase_aleatoria(queryset=frases)
