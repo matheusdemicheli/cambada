@@ -104,9 +104,15 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+# WEBPUSH_SETTINGS = {
+#     "VAPID_PUBLIC_KEY": "BFg1VdS8njeZur1aWfWxm6SXuqp60zBBmdNnMTYDYqNIkpeKQz0ab6WfVmMcOnDKWPTjgzfMPWyDffvmT9H8Pos",
+#     "VAPID_PRIVATE_KEY":"i6DYrsERcT3mRuGq08v6TuIE75RZxaWSLuvlD26w6Hk",
+#     "VAPID_ADMIN_EMAIL": "matheusdemicheli@gmail.com"
+# }
+
 WEBPUSH_SETTINGS = {
-    "VAPID_PUBLIC_KEY": "BFg1VdS8njeZur1aWfWxm6SXuqp60zBBmdNnMTYDYqNIkpeKQz0ab6WfVmMcOnDKWPTjgzfMPWyDffvmT9H8Pos",
-    "VAPID_PRIVATE_KEY":"i6DYrsERcT3mRuGq08v6TuIE75RZxaWSLuvlD26w6Hk",
+    "VAPID_PUBLIC_KEY": "BDnic52EBWr9E4m6JVjDFjvHUzrXn3ybWz74XGFhjgw5oIh021fF1IxWQwt8-BsWLw6_7qpWGlNON9g_SADJtpg",
+    "VAPID_PRIVATE_KEY":"ouAvOsmZFWk6fkDxK7a0TNKAnYBWlYoLi8M-ZYWnO_s",
     "VAPID_ADMIN_EMAIL": "matheusdemicheli@gmail.com"
 }
 
