@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Transcrição{% endblock %}</title>
+</head>
+<body>
+    <header>
+        <h1>Transcrição de Vídeo</h1>
+    </header>
+    
+    <main>
+        <p>Somente vídeos em formato MP3 ou MP4</p>
+        <form method="post" enctype="multipart/form-data">
+            <div>
+                {% csrf_token %}
+                {{ form }}
+            </div>
+            <div>
+                <button type="submit">Enviar</button>
+            </div>
+        </form>
+    </main>
+    
+    <footer>
+    </footer>
+</body>
+</html>
+
