@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Frases Históricas</title>
+    <style>
+        :root {
+            color-scheme: light;
+            color: #2b2b1f;
+            background: #f2e8d5;
+        }
+        body {
+            margin: 0;
+            font-family: "Georgia", "Times New Roman", serif;
+            background: radial-gradient(circle at top, #f7efd9 0%, #e6d5b8 40%, #d2b78d 100%);
+            color: #2b2b1f;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 32px 20px 60px;
+        }
+        .hero {
+            background: rgba(255, 250, 240, 0.95);
+            border: 1px solid rgba(92, 74, 59, 0.2);
+            border-radius: 24px;
+            padding: 36px;
+            box-shadow: 0 24px 40px rgba(76, 61, 45, 0.12);
+            background-image: linear-gradient(180deg, rgba(255,255,245,0.9), rgba(239, 224, 203, 0.75));
+        }
+        h1 {
+            margin-top: 0;
+            font-size: 2.6rem;
+            color: #3a2f21;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+        }
+        p {
+            color: #5d5140;
+            line-height: 1.8;
+            max-width: 700px;
+        }
+        .controls {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 28px;
+        }
+        input, button {
+            border: 1px solid rgba(92, 74, 59, 0.2);
+            border-radius: 999px;
+            padding: 12px 18px;
+            font-size: 1rem;
+        }
+        input {
+            flex: 1;
+            min-width: 220px;
+            background: rgba(255, 247, 236, 0.95);
+            color: #2b2b1f;
+            box-shadow: inset 0 1px 3px rgba(76, 61, 45, 0.08);
+        }
+        button {
+            background: #8b5e3c;
+            color: #f8f0dc;
+            cursor: pointer;
+            transition: transform 0.2s ease, background-color 0.2s ease;
+        }
+        button:hover {
+            transform: translateY(-1px);
+            background-color: #7a5133;
+        }
+        .grid {
+            display: grid;
+            gap: 18px;
+            margin-top: 18px;
+        }
+        .status-row {
+            margin-top: 18px;
+        }
+        .status-tag {
+            display: inline-block;
+            background: rgba(122, 94, 68, 0.12);
+            color: #5d4427;
+            padding: 8px 14px;
+            border-radius: 999px;
+            border: 1px solid rgba(122, 94, 68, 0.16);
+            font-size: 0.95rem;
+            letter-spacing: 0.02em;
+        }
+        .loading {
+            display: none;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+            padding: 14px 18px;
+            background: rgba(255, 244, 229, 0.9);
+            border: 1px solid rgba(122, 94, 68, 0.18);
+            border-radius: 18px;
+            color: #5d4427;
+            font-size: 0.95rem;
+            box-shadow: inset 0 1px 2px rgba(76, 61, 45, 0.05);
+        }
+        .loading img {
+            width: 24px;
+            height: 24px;
+        }
+        .pagination-row {
+            display: none;
+            align-items: center;
+            gap: 10px;
+            margin-top: 16px;
+        }
+        .pagination-row button {
+            border: 1px solid rgba(92, 74, 59, 0.2);
+            background: #f9f5ee;
+            color: #5d4427;
+            border-radius: 999px;
+            padding: 10px 16px;
+            cursor: pointer;
+        }
+        .pagination-row button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .pagination-row span {
+            color: #5d4427;
+            font-size: 0.95rem;
+        }
+        .card {
+            background: rgba(255, 250, 240, 0.96);
+            border: 1px solid rgba(92, 74, 59, 0.16);
+            border-radius: 18px;
+            padding: 24px;
+            box-shadow: 0 12px 28px rgba(76, 61, 45, 0.08);
+        }
+        .meta {
+            color: #6d5b45;
+            font-size: 0.95rem;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        .quote {
+            font-size: 1.15rem;
+            line-height: 1.9;
+            margin-top: 12px;
+            white-space: pre-wrap;
+            color: #312819;
+        }
+        .tag {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: rgba(196, 167, 114, 0.18);
+            color: #5e4327;
+            font-size: 0.85rem;
+            margin-top: 10px;
+            letter-spacing: 0.02em;
+        }
+    </style>
+</head>
+<body>
+    <main class="container">
+        <section class="hero">
+            <h1>Frases Históricas</h1>
+            <p>Descubra a frase do dia, uma frase aleatória ou busque por conteúdo ou autor.</p>
+            <div class="controls">
+                <input id="searchInput" type="text" placeholder="Busque por autor ou texto">
+                <button id="searchButton">Buscar</button>
+                <button id="randomButton">Frase aleatória</button>
+                <button id="todayButton">Frase do dia</button>
+            </div>
+            <div class="status-row">
+                <span class="status-tag" id="resultType">Frase do dia</span>
+            </div>
+            <div class="loading" id="loadingIndicator">
+                <img src="data:image/gif;base64,R0lGODlhEAAQAJECAAAAAP///wAAACH5BAEAAAMALAAAAAAQABAAAANNaLrc/jDKSesy02ouz3rz7D4biSJbmiabqyrbuC8fyT0pADs=" alt="Loading">
+                Carregando...
+            </div>
+            <div class="pagination-row" id="paginationRow">
+                <button id="prevPage" type="button">Anterior</button>
+                <span id="pageLabel">Página 1</span>
+                <button id="nextPage" type="button">Próxima</button>
+            </div>
+            <div class="grid" id="results"></div>
+        </section>
+    </main>
+    <script>
+        const resultsBox = document.getElementById('results');
+        const searchInput = document.getElementById('searchInput');
+
+        const renderCard = (frase) => {
+            const card = document.createElement('article');
+            card.className = 'card';
+            card.innerHTML = `
+                <div class="tag">${frase.autor || 'Autor desconhecido'}</div>
+                <div class="quote">${frase.texto || ''}</div>
+                <div class="meta">${frase.data || ''}</div>
+            `;
+            return card;
+        };
+
+        const loadingIndicator = document.getElementById('loadingIndicator');
+
+        const showLoading = () => {
+            loadingIndicator.style.display = 'flex';
+        };
+
+        const hideLoading = () => {
+            loadingIndicator.style.display = 'none';
+        };
+
+        const paginationRow = document.getElementById('paginationRow');
+        const prevPageButton = document.getElementById('prevPage');
+        const nextPageButton = document.getElementById('nextPage');
+        const pageLabel = document.getElementById('pageLabel');
+        const resultType = document.getElementById('resultType');
+
+        let currentPage = 1;
+        let currentQuery = '';
+        let currentMode = 'today';
+
+        const setResultType = (text) => {
+            resultType.textContent = text;
+        };
+
+        const setPaginationVisible = (visible) => {
+            paginationRow.style.display = visible ? 'flex' : 'none';
+        };
+
+        const parseLocationState = () => {
+            const params = new URLSearchParams(window.location.search);
+            return {
+                mode: params.get('modo') || 'today',
+                query: params.get('termo') || '',
+                page: Number(params.get('pagina') || 1),
+            };
+        };
+
+        const buildFetchUrl = (endpoint, page = 1, pagination = false) => {
+            if (!pagination) {
+                return endpoint;
+            }
+            return `${endpoint}${endpoint.includes('?') ? '&' : '?'}pagina=${page}`;
+        };
+
+        const buildHistoryUrl = (mode, query, page) => {
+            if (mode === 'random') {
+                return '/?modo=random';
+            }
+            if (mode === 'today') {
+                return '/?modo=today';
+            }
+            const params = new URLSearchParams();
+            if (query) params.set('termo', query);
+            params.set('pagina', String(page));
+            return `/?${params.toString()}`;
+        };
+
+        const updateHistory = (mode, query, page, replace = false) => {
+            const url = buildHistoryUrl(mode, query, page);
+            const state = { mode, query, page };
+            if (replace) {
+                window.history.replaceState(state, '', url);
+            } else {
+                window.history.pushState(state, '', url);
+            }
+        };
+
+        const setResults = (frases) => {
+            resultsBox.innerHTML = '';
+            if (!frases.length) {
+                const message = currentMode === 'search'
+                    ? currentQuery
+                        ? `Nenhuma frase encontrada para "${currentQuery}".`
+                        : `Nenhuma frase encontrada na página ${currentPage}.`
+                    : 'Nenhuma frase encontrada.';
+                resultsBox.innerHTML = `<div class="card">${message}</div>`;
+                return;
+            }
+            const fragment = document.createDocumentFragment();
+            frases.forEach((frase) => fragment.appendChild(renderCard(frase)));
+            resultsBox.appendChild(fragment);
+        };
+
+        const load = async (endpoint, page = 1, pagination = false, pushHistory = true) => {
+            showLoading();
+            try {
+                const response = await fetch(buildFetchUrl(endpoint, page, pagination), { headers: { 'Accept': 'application/json' } });
+                const data = await response.json();
+                if (data.frases) {
+                    setResults(data.frases);
+                } else {
+                    setResults([data]);
+                }
+                if (pagination) {
+                    currentPage = data.pagina_atual;
+                    pageLabel.textContent = `Página ${data.pagina_atual} de ${data.total_paginas}`;
+                    prevPageButton.disabled = !data.has_previous;
+                    nextPageButton.disabled = !data.has_next;
+                }
+                if (pushHistory) {
+                    if (currentMode === 'random') {
+                        updateHistory('random', '', 1);
+                    } else if (currentMode === 'today') {
+                        updateHistory('today', '', 1);
+                    } else {
+                        updateHistory('search', currentQuery, currentPage);
+                    }
+                }
+            } finally {
+                hideLoading();
+            }
+        };
+
+        const loadSearch = (query, page = 1, pushHistory = true) => {
+            currentQuery = query;
+            currentMode = 'search';
+            setPaginationVisible(true);
+            const url = query ? `/pesquisa/?termo=${encodeURIComponent(query)}` : '/pesquisa/';
+            setResultType(query ? `Resultado da busca: "${query}"` : 'Resultados gerais');
+            load(url, page, true, pushHistory);
+        };
+
+        const loadRandom = (pushHistory = true) => {
+            currentMode = 'random';
+            setPaginationVisible(false);
+            setResultType('Frase aleatória');
+            currentQuery = '';
+            load('/aleatoria/', 1, false, pushHistory);
+        };
+
+        const loadToday = (pushHistory = true) => {
+            currentMode = 'today';
+            setPaginationVisible(false);
+            setResultType('Frase do dia');
+            currentQuery = '';
+            load('/dia/', 1, false, pushHistory);
+        };
+
+        const applyState = (state) => {
+            if (!state) {
+                loadToday(false);
+                return;
+            }
+            if (state.mode === 'random') {
+                loadRandom(false);
+                return;
+            }
+            if (state.mode === 'today') {
+                loadToday(false);
+                return;
+            }
+            searchInput.value = state.query || '';
+            loadSearch(state.query || '', Number(state.page || 1), false);
+        };
+
+        window.addEventListener('popstate', (event) => {
+            applyState(event.state || parseLocationState());
+        });
+
+        const initialState = parseLocationState();
+        if (initialState.mode === 'random') {
+            loadRandom(false);
+        } else if (initialState.mode === 'today' && !initialState.query && initialState.page === 1) {
+            loadToday(false);
+        } else if (initialState.query || initialState.page > 1) {
+            searchInput.value = initialState.query;
+            loadSearch(initialState.query, initialState.page, false);
+        } else {
+            loadToday(false);
+        }
+
+        document.getElementById('searchButton').addEventListener('click', () => {
+            loadSearch(searchInput.value.trim());
+        });
+
+        document.getElementById('randomButton').addEventListener('click', () => {
+            loadRandom();
+        });
+        document.getElementById('todayButton').addEventListener('click', () => {
+            loadToday();
+        });
+
+        prevPageButton.addEventListener('click', () => {
+            if (currentPage > 1) {
+                loadSearch(currentQuery, currentPage - 1);
+            }
+        });
+
+        nextPageButton.addEventListener('click', () => {
+            loadSearch(currentQuery, currentPage + 1);
+        });
+
+        searchInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                document.getElementById('searchButton').click();
+            }
+        });
+    </script>
+</body>
+</html>

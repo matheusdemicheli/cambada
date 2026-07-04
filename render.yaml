@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: cambada
+    env: python
+    plan: free
+    buildCommand: "cd django && pip install -r requirements.txt"
+    releaseCommand: "cd django && python manage.py migrate --noinput && python manage.py bootstrap_data"
+    startCommand: "cd django && gunicorn cambada.wsgi:application --bind 0.0.0.0:$PORT"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.3
+      - key: DJANGO_SETTINGS_MODULE
+        value: cambada.settings
+      - key: DEBUG
+        value: False
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ALLOWED_HOSTS
+        value: cambada.onrender.com
+      - key: CSRF_TRUSTED_ORIGINS
+        value: https://cambada.onrender.com
+      - key: DATABASE_URL
+        value: postgres://user:password@host:5432/dbname

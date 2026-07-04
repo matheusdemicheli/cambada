@@ -1,124 +1,105 @@
 """
 Django settings for cambada project.
-
-For more information on this file, see
-https://docs.djangoproject.com/en/1.7/topics/settings/
-
-For the full list of settings and their values, see
-https://docs.djangoproject.com/en/1.7/ref/settings/
 """
 
-
-
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+from pathlib import Path
 
+import dj_database_url
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
+BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'y@71^l7*zx*lr4&+(gbe%6v&v^x%ha1rt4(drqq-8bdncgax+='
+SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-key")
+DEBUG = os.getenv("DEBUG", "True").lower() in {"1", "true", "yes", "on"}
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+ALLOWED_HOSTS = [
+    host.strip()
+    for host in os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1,testserver").split(",")
+    if host.strip()
+]
 
-TEMPLATE_DEBUG = True
+CSRF_TRUSTED_ORIGINS = [
+    origin.strip()
+    for origin in os.getenv("CSRF_TRUSTED_ORIGINS", "").split(",")
+    if origin.strip()
+]
 
-ALLOWED_HOSTS = ['matheusmonego.pythonanywhere.com', 'localhost']
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+USE_X_FORWARDED_HOST = True
 
+INSTALLED_APPS = [
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "corsheaders",
+    "webpush",
+    "frases_historicas",
+]
 
-# Application definition
-
-INSTALLED_APPS = (
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'corsheaders',
-    'webpush',
-    'frases_historicas'
-)
-
-MIDDLEWARE = (
-    'corsheaders.middleware.CorsMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-)
+MIDDLEWARE = [
+    "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+]
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
             ],
         },
     },
 ]
 
-ROOT_URLCONF = 'cambada.urls'
-
-WSGI_APPLICATION = 'cambada.wsgi.application'
-
+ROOT_URLCONF = "cambada.urls"
+WSGI_APPLICATION = "cambada.wsgi.application"
 
 CORS_ORIGIN_ALLOW_ALL = True
 
-# Database
-# https://docs.djangoproject.com/en/1.7/ref/settings/#databases
-
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+    "default": dj_database_url.config(
+        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+        conn_max_age=600,
+    )
 }
 
-# Internationalization
-# https://docs.djangoproject.com/en/1.7/topics/i18n/
+if os.getenv("DATABASE_URL") and os.getenv("DATABASE_URL").startswith("postgres"):
+    DATABASES["default"]["OPTIONS"] = {"sslmode": "require"}
 
-LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
-
+LANGUAGE_CODE = "en-us"
+TIME_ZONE = "UTC"
 USE_I18N = True
-
-USE_L10N = True
-
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.7/howto/static-files/
-
-STATIC_URL = '/static/'
-
-# WEBPUSH_SETTINGS = {
-#     "VAPID_PUBLIC_KEY": "BFg1VdS8njeZur1aWfWxm6SXuqp60zBBmdNnMTYDYqNIkpeKQz0ab6WfVmMcOnDKWPTjgzfMPWyDffvmT9H8Pos",
-#     "VAPID_PRIVATE_KEY":"i6DYrsERcT3mRuGq08v6TuIE75RZxaWSLuvlD26w6Hk",
-#     "VAPID_ADMIN_EMAIL": "matheusdemicheli@gmail.com"
-# }
-
-WEBPUSH_SETTINGS = {
-    "VAPID_PUBLIC_KEY": "BDnic52EBWr9E4m6JVjDFjvHUzrXn3ybWz74XGFhjgw5oIh021fF1IxWQwt8-BsWLw6_7qpWGlNON9g_SADJtpg",
-    "VAPID_PRIVATE_KEY":"ouAvOsmZFWk6fkDxK7a0TNKAnYBWlYoLi8M-ZYWnO_s",
-    "VAPID_ADMIN_EMAIL": "matheusdemicheli@gmail.com"
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
+STORAGES = {
+    "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+    "staticfiles": {"BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"},
 }
 
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# {
-# "subject" : "mailto: <matheusdemicheli@gmail.com>",
-# "publicKey" : "BFg1VdS8njeZur1aWfWxm6SXuqp60zBBmdNnMTYDYqNIkpeKQz0ab6WfVmMcOnDKWPTjgzfMPWyDffvmT9H8Pos",
-# "privateKey" : "i6DYrsERcT3mRuGq08v6TuIE75RZxaWSLuvlD26w6Hk"
-# }
+WEBPUSH_SETTINGS = {
+    "VAPID_PUBLIC_KEY": os.getenv(
+        "VAPID_PUBLIC_KEY",
+        "BDnic52EBWr9E4m6JVjDFjvHUzrXn3ybWz74XGFhjgw5oIh021fF1IxWQwt8-BsWLw6_7qpWGlNON9g_SADJtpg",
+    ),
+    "VAPID_PRIVATE_KEY": os.getenv("VAPID_PRIVATE_KEY", "ouAvOsmZFWk6fkDxK7a0TNKAnYBWlYoLi8M-ZYWnO_s"),
+    "VAPID_ADMIN_EMAIL": os.getenv("VAPID_ADMIN_EMAIL", "matheusdemicheli@gmail.com"),
+}

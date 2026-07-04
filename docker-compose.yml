@@ -1,0 +1,13 @@
+services:
+  web:
+    build:
+      context: ./django
+    command: sh -c "python manage.py migrate --noinput && python manage.py bootstrap_data && gunicorn cambada.wsgi:application --bind 0.0.0.0:8000 --workers 2"
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./django:/app
+    environment:
+      DJANGO_SETTINGS_MODULE: cambada.settings
+      DEBUG: "False"
+      ALLOWED_HOSTS: localhost,127.0.0.1

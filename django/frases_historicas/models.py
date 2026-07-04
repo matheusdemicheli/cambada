@@ -18,7 +18,10 @@ class FraseHistoricaManager(models.Manager):
         Retorna uma Frase Histórica aleatória.
         """
         queryset = queryset or self.get_queryset()
-        indice = randint(0, queryset.count() - 1)
+        total = queryset.count()
+        if total == 0:
+            raise self.model.DoesNotExist("Nenhuma frase encontrada")
+        indice = randint(0, total - 1)
         return queryset.all()[indice]
 
     def get_frase_do_dia(self):
